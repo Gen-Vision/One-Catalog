@@ -1,28 +1,27 @@
-# Gen-Vision
-Gen Vision empowers e-commerce businesses & agencies to elevate their online presence through AI-powered solutions. It offers a comprehensive one-stop solution for enhancing, editing, and creating visual content for e-commerce listings and marketing campaigns.
+# React + TypeScript + Vite
 
-### Deployed link : app.genvision.in
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Features for Beta 1.2 (E-com)
-- Background removal  - Clipdrop
-- Custom background image generation with prompt - Clipdrop
-- Generate Heading & description for the product - Chat GPT turbo 3.5
-- Magic eraser - Clipdrop
+Currently, two official plugins are available:
 
-## Tech Stack
-- React.js / TypeScript
-- Design System - Shadcn
-- Authentication - Clerk api
-- Image AI - Clipdrop api
-- Text AI - Chat GPT
-- Analytics - Hotjar
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Figma design 
-https://www.figma.com/file/zGxLXIypJ2yGLGXeZ274aw/Gen-Vision---Product?type=design&node-id=0%3A1&mode=design&t=2TKLl8nNIXwCRXuo-1
+## Expanding the ESLint configuration
 
-## Convert to audio book
-We also offer a comprehensive and efficient one-stop solution for individuals, authors, publishers, and libraries in converting physical books into e-books and audiobooks across multiple languages using advanced artificial intelligence technology
-### Tech Stack
-- OCR - https://tesseract.projectnaptha.com  (JS)
-- Text to audio - Whisper (Open AI)
-- Convert to other languages - chat gpt
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+
+- Configure the top-level `parserOptions` property like this:
+
+```js
+   parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json', './tsconfig.node.json'],
+    tsconfigRootDir: __dirname,
+   },
+```
+
+- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
+- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
