@@ -22,7 +22,8 @@ import Text from './components/text.tsx';
 import {I18nextProvider} from "react-i18next";
 import i18next from "i18next";
 import Mockup2 from './components/mockup2.tsx';
-
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from 'react-toastify';
 i18next.init({
   interpolation: { escapeValue: false },  // React already does escaping
 });
@@ -64,7 +65,19 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    
+            <div>
+              <ToastContainer position="top-right"
+            autoClose={2500}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+            />
+</div>
     <I18nextProvider i18n={i18next}>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <RouterProvider router={router} />

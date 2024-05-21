@@ -85,3 +85,7 @@ html, body {
     font-family: 'Unbounded', sans-serif;
   }
 }
+
+.disabled{
+  opacity: 0.5;
+}
