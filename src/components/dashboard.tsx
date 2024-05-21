@@ -178,7 +178,43 @@ export default function Dashboard() {
                 Bulk upload
                 <ArrowUpOnSquareStackIcon strokeWidth={2} className="h-10 w-10" />
               </Button>
-              <BulkUpload isOpen={isModalOpen} onRequestClose={changeModalState} />
+
+              {
+        isModalOpen && (
+          <div 
+            style={{ 
+              position: 'fixed', 
+              top: 0, // Adjust based on the height and margin of the dropdown div
+              left: 0, 
+              width: '100vw', 
+              height: '100vh', // Adjust to account for the height of the dropdown div
+              backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+              zIndex: 1000,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              paddingTop: '10px' // Optional padding to space the modal content
+            }}
+            onClick={() => setIsModalOpen(!isModalOpen)} // Close modal when clicking outside content
+          >
+            <div 
+              style={{ 
+                position: 'relative', 
+                width: '80vw', 
+                height: '95vh', 
+                backgroundColor: 'white', 
+                padding: '20px',
+                zIndex: 1001,
+                overflow: 'auto' 
+              }}
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside content
+            >
+            <BulkUpload/>
+            </div>
+          </div>
+        )
+}
+
             </div>
 
             <div className="flex items-center space-x-2">
