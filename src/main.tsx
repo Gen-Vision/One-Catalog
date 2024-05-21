@@ -21,6 +21,7 @@ import LandingPage from './components/landingPage.tsx';
 import Text from './components/text.tsx';
 import {I18nextProvider} from "react-i18next";
 import i18next from "i18next";
+import Mockup2 from './components/mockup2.tsx';
 
 i18next.init({
   interpolation: { escapeValue: false },  // React already does escaping
@@ -52,11 +53,8 @@ const router = createBrowserRouter([
       },
       { path: '/genvision/:userId/:productId/upload', element: <UploadImage /> },
       { path: '/genvision/:userId/:productId/edit', element: <EditImage /> },
-      {
-        path: '/genvision/:userId/:productId/mockup/assets',
-        element: <Mockup />,
-        children: [{ path: 'prompt', element: <Prompt /> }],
-      },
+      {path: '/genvision/:userId/:productId/mockup/1', element: <Mockup />,},
+      {path: '/genvision/:userId/:productId/mockup/2', element: <Mockup2 />,},
       { path: '/genvision/:userId/:productId/text', element: <Text /> },
       { path: '/genvision/:userId/:productId/social-media', element: <SocialMedia /> },
       { path: '/genvision/:userId/:productId/3d-model', element: <Model /> },

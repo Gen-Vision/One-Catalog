@@ -7,11 +7,12 @@ import removeBackground from '@/api/removeBackground';
 // import response from "./src/assets/images/response.png"
 import responseImage from '../assets/images/response.png';
 import imageUpscale from '@/api/imageUpscale';
+import { useParams } from 'react-router-dom';
 
 interface ProductData {
   id: string;
   category: string;
-  uploadedImages: string;
+  uploadedImages: string[];
   brand?: string | undefined;
   productName?: string | undefined;
   quantity?: number | undefined;
@@ -38,9 +39,9 @@ export default function EditImage() {
   }
 
   // Assume product is an array of ProductData objects
-  const product: ProductData[] = JSON.parse(
-    localStorage.getItem('product') || '[]',
-  );
+  const {productId} = useParams();
+  const product: ProductData | undefined = JSON.parse(localStorage.getItem('product') || '[]').find((p: ProductData) => p.id === productId);
+
 
   // Flatten all uploadedImages arrays into a single array
   useEffect(() => {
@@ -85,10 +86,10 @@ export default function EditImage() {
         }
         setEditedImage(responseImage);
       } else {
-        const allImages = product.reduce<string[]>((images, productItem) => {
-          return [...images, ...productItem.uploadedImages];
-        }, []);
-        setUploadedImages(allImages);
+        if (product) {
+          const allImages: string[] = product.uploadedImages;
+          setUploadedImages(allImages);
+        }
       }
     };
   
@@ -240,8 +241,7 @@ export default function EditImage() {
       <Separator orientation="vertical" className="" />
 
       <div className="w-2/3 bg-white p-8">
-        <div
-          className="grid gap-4 w-full border h-[350px] rounded-md border-[#623FC4]"
+        <div className="grid grid-cols-3 gap-4 border p-5 rounded-md border-[#623FC4]"
           style={{
             gridTemplateColumns: getGridTemplateColumns(4), // Adjust the number of columns as needed
           }}

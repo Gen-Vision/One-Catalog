@@ -5,6 +5,7 @@ interface InputWithSpeech {
   label: string;
   placeholder: string;
   setInput: any;
+  disabled: any;
 }
 const InputWithSpeech = ({
   name,
@@ -12,6 +13,7 @@ const InputWithSpeech = ({
   placeholder,
   inputValue,
   setInput,
+  disabled
 }: InputWithSpeech) => {
   const {
     error,
@@ -47,6 +49,7 @@ const InputWithSpeech = ({
           className="border-0 grow"
           value={inputValue}
           onChange={e => setInput(e.target.value)}
+          disabled={disabled}
         />
         {!error && (
           <div>

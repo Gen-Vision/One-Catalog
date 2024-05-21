@@ -1,6 +1,5 @@
 import Button from '@material-tailwind/react/components/Button';
 import React, { useState } from 'react';
-import Modal from 'react-modal';
 
 interface ProductData {
   id: string;
@@ -13,12 +12,8 @@ interface ProductData {
   expiryDate: string;
 }
 
-interface ProductDataModalProps {
-  isOpen: boolean;
-  onRequestClose: () => void;
-}
 
-const BulkUpload: React.FC<ProductDataModalProps> = ({ isOpen, onRequestClose }) => {
+const BulkUpload: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,8 +52,6 @@ const BulkUpload: React.FC<ProductDataModalProps> = ({ isOpen, onRequestClose })
       reader.readAsText(file);
     }
   
-    // Close the modal
-    onRequestClose();
   };
   
 
@@ -85,18 +78,13 @@ const BulkUpload: React.FC<ProductDataModalProps> = ({ isOpen, onRequestClose })
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
-      contentLabel="Product Data Modal"
-    >
+    <div>
       <h2>Upload CSV File</h2>
       <input type="file" onChange={handleFileChange} /><br />
       <Button className="text-white bg-[#623FC4] fs-2" placeholder="a" variant='outlined' onClick={handleSubmit}>
             Submit
       </Button>
-      <button onClick={handleSubmit}>Submit</button>
-    </Modal>
+    </div>
   );
 };
 

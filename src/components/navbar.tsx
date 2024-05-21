@@ -1,6 +1,6 @@
 import { NavLink, useParams } from 'react-router-dom';
 import {useState} from 'react';
-import UploadImage from './uploadimage';
+import UploadAdditionalImage from './uploadadditionalimage';
 
 const NavBar = () => {
   const {productId} = useParams();
@@ -56,7 +56,7 @@ const NavBar = () => {
               }}
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside content
             >
-              <UploadImage />
+              <UploadAdditionalImage />
             </div>
           </div>
         )
@@ -66,7 +66,7 @@ const NavBar = () => {
       <div className="flex items-center space-x-4">
         {[
           { to: `/genvision/:userId/${productId}/edit`, title: 'Edit Image' },
-          { to: `/genvision/:userId/${productId}/mockup/assets`, title: 'Mockup' },
+          { to: `/genvision/:userId/${productId}/mockup/1`, title: 'Mockup' },
           { to: `/genvision/:userId/${productId}/text`, title: 'Text' },
           { to: `/genvision/:userId/${productId}/social-media`, title: 'Social Media' },
           { to: `/genvision/:userId/${productId}/3d-model`, title: '3D Model' }
@@ -111,12 +111,13 @@ const NavBar = () => {
         </a> */}
       </div>
       <div className="flex space-x-4">
-        <button className="bg-white font-semibold hover:bg-[#623FC4] hover:text-white  text-Black py-2 px-4 rounded">
-          Download all
+        <button className="bg-white border border-purple-500 font-semibold hover:bg-[#623FC4] hover:text-white  text-Black py-2 px-4 rounded">
+          Download
         </button>
         <button className="bg-[#623FC4] font-semibold border hover:bg-white hover:text-black hover:border hover:border-[#623FC4] text-white py-2 px-4 rounded">
-          Generate all
+          Publish
         </button>
+        
       </div>
     </div>
     </>

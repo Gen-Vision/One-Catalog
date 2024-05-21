@@ -1,97 +1,72 @@
-import { useState, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import UploadButton from './uploadbtn';
 import InputWithSpeech from './ui/inputWithSpeech';
 import { useNavigate, useParams } from 'react-router-dom';
-// import { amazon, flipkart } from '@/assets/logo';
-// import { Switch } from './ui/switch';
 
 interface ProductData {
   id: string;
   category: string;
   uploadedImages: string[];
-  brand?: string | undefined;
-  productName?: string | undefined;
-  quantity?: number | undefined;
-  price?: number | undefined;
-  expiryDate?: string | undefined;
+  brand?: string;
+  productName?: string;
+  quantity?: number;
+  price?: number;
+  expiryDate?: string;
 }
 
-const UploadImage = () => {
-  // const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [productId, setProductId] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
+const UploadAdditionalImage: React.FC = () => {
+  const [product, setProduct] = useState<ProductData | null>(null);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [brand, setBrand] = useState<string | undefined>(undefined);
-  const [productName, setProductName] = useState<string | undefined>(undefined);
-  const [quantity, setQuantity] = useState<number | undefined>(undefined);
-  const [price, setPrice] = useState<number | undefined>(undefined);
-  const [expiryDate, setExpiryDate] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
-  const {userId} = useParams();
+  const { userId, productId } = useParams<{ userId: string; productId: string }>();
+
+  useEffect(() => {
+    const products: ProductData[] = JSON.parse(localStorage.getItem('product') || '[]');
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      setProduct(product);
+      setUploadedImages(product.uploadedImages);
+    } else {
+      console.error('Product not found');
+    }
+  }, [productId]);
 
   const handleImageChange = (imageFile: File) => {
-    // setSelectedImage(imageFile);
-    setUploadedImages([...uploadedImages, URL.createObjectURL(imageFile)]);
+    const newImageURL = URL.createObjectURL(imageFile);
+    setUploadedImages([...uploadedImages, newImageURL]);
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Create an object with product id, category, and image URL
-    const productData: ProductData = {
-      id: productId,
-      category,
-      uploadedImages,
-      brand,
-      productName,
-      quantity,
-      price,
-      expiryDate,
-    };
+    if (!product) return;
 
-    console.log('Product Data:', productData);
+    const updatedProduct = { ...product, uploadedImages };
 
-    const product: ProductData[] = JSON.parse(
-      localStorage.getItem('product') || '[]',
-    );
+    const products: ProductData[] = JSON.parse(localStorage.getItem('product') || '[]');
+    const existingProductIndex = products.findIndex(p => p.id === productId);
 
-    // Check if the product with the same id already exists
-    const existingProductIndex = product.findIndex(p => p.id === productId);
-
-    // If exists, update the existing product, otherwise add a new one
     if (existingProductIndex !== -1) {
-      product[existingProductIndex] = productData;
+      products[existingProductIndex] = updatedProduct;
     } else {
-      product.push(productData);
+      products.push(updatedProduct);
     }
 
-    // Save the updated product array to localStorage
-    localStorage.setItem('product', JSON.stringify(product));
+    localStorage.setItem('product', JSON.stringify(products));
 
-    // Add the image URL to the uploadedImages state
-    // if (productData.imageUrl) {
-    //   setUploadedImages([...uploadedImages, productData.imageUrl]);
-    // }
-
-    // Reset form fields and the selected image
-    setProductId('');
-    setCategory('');
-    // setSelectedImage(null);
-    setBrand('');
-    setProductName('');
-    setPrice(undefined);
-    setQuantity(undefined);
-    setExpiryDate('');
-    setUploadedImages([]);
     navigate(`/genvision/${userId}`);
   };
+
+  if (!product) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex-1 bg-black mx-7 my-7 flex">
       <div className="w-1/3 bg-white border-[#D4D4D4]">
         <div className="h-[350px] bg-white p-4 rounded-b-lg">
           <h1 className="font-bold text-[#000000] mx-2 text-xl">
-            Add New Product
+            Add Additional Images
           </h1>
           <div className="mt-4 mx-2">
             <div className="mx-0">
@@ -102,20 +77,20 @@ const UploadImage = () => {
                 <InputWithSpeech
                   placeholder="Brand Name"
                   label="Brand"
-                  inputValue={brand}
-                  setInput={setBrand}
+                  inputValue={product.brand}
+                  setInput={() => {}}
                   name="brand"
-                  disabled={false}
+                  disabled={true}
                 />
               </div>
               <div className="mb-4">
                 <InputWithSpeech
                   placeholder="Product Name"
                   label="Product"
-                  inputValue={productName}
-                  setInput={setProductName}
+                  inputValue={product.productName}
+                  setInput={() => {}}
                   name="productName"
-                  disabled={false}
+                  disabled={true}
                 />
               </div>
 
@@ -123,10 +98,10 @@ const UploadImage = () => {
                 <InputWithSpeech
                   placeholder="Product Id Required."
                   label="Product ID"
-                  inputValue={productId}
-                  setInput={setProductId}
+                  inputValue={product.id}
+                  setInput={() => {}}
                   name="productId"
-                  disabled={false}
+                  disabled={true}
                 />
               </div>
 
@@ -134,10 +109,10 @@ const UploadImage = () => {
                 <InputWithSpeech
                   placeholder="Category Required."
                   label="Category"
-                  inputValue={category}
-                  setInput={setCategory}
+                  inputValue={product.category}
+                  setInput={() => {}}
                   name="category"
-                  disabled={false}
+                  disabled={true}
                 />
               </div>
 
@@ -155,8 +130,8 @@ const UploadImage = () => {
                     name="quantity"
                     placeholder="Quantity Required."
                     className="border border-grey-300 shadow p-1 w-full rounded"
-                    value={quantity}
-                    onChange={e => setQuantity(parseInt(e.target.value))}
+                    value={product.quantity}
+                    disabled
                   />
                 </div>
 
@@ -173,8 +148,8 @@ const UploadImage = () => {
                     name="price"
                     placeholder="Price Required."
                     className="border border-grey-300 shadow p-1 w-full rounded"
-                    value={price}
-                    onChange={e => setPrice(parseInt(e.target.value))}
+                    value={product.price}
+                    disabled
                   />
                 </div>
               </div>
@@ -187,41 +162,29 @@ const UploadImage = () => {
                   Manufacturing / Expiry Date
                 </label>
                 <input
-                  type="date"
+                  type="text"
                   id="expiryDate"
                   name="expiryDate"
                   placeholder="Manufacturing / Expiry Date Required."
                   className="border border-gray-300 shadow p-1 w-full rounded"
-                  value={expiryDate}
-                  onChange={e => setExpiryDate(e.target.value)}
+                  value={product.expiryDate}
+                  disabled
                 />
               </div>
 
-              {/* <div className="flex  gap-4 items-center mb-4">
-                <div className="flex items-center">
-                  <img
-                    src={amazon}
-                    alt="Toggle 1"
-                    className="w-7 h-7 mr-2 border rounded-xl"
-                  />
-                  <Switch name="amazon" />
-                </div>
-                <div className="flex item">
-                  <img
-                    src={flipkart}
-                    alt="Toggle 2"
-                    className="w-7 h-7 mr-2 border rounded-xl "
-                  />
-                  <Switch name="flipkart" />
-                </div>
-              </div> */}
-
               <div className="flex gap-4 mt-4">
-                <button className="bg-[#FEFBFF] w-1/2 items-center justify-center px-2 py-2 font-medium  rounded-md cursor-pointer border border-violet-600">
+                <button
+                  type="button"
+                  className="bg-[#FEFBFF] w-1/2 items-center justify-center px-2 py-2 font-medium rounded-md cursor-pointer border border-violet-600"
+                  onClick={() => navigate(`/genvision/${userId}`)}
+                >
                   Cancel
                 </button>
 
-                <button className="bg-[#623FC4] w-1/2 items-center justify-center font-medium  rounded-md cursor-pointer text-white">
+                <button
+                  type="submit"
+                  className="bg-[#623FC4] w-1/2 items-center justify-center font-medium rounded-md cursor-pointer text-white"
+                >
                   Done
                 </button>
               </div>
@@ -242,4 +205,4 @@ const UploadImage = () => {
   );
 };
 
-export default UploadImage;
+export default UploadAdditionalImage;

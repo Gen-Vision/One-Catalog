@@ -41,7 +41,7 @@ export default function Text1() {
   return (
     <div className="flex ">
       <div className="w-1/3 flex flex-col  h-full border-[#D4D4D4] rounded-b-lg mt-4 ">
-        <h1 className="text-[#000000] mb-5 text-base font-semibold">
+        {/* <h1 className="text-[#000000] mb-5 text-base font-semibold">
           Describe about background
         </h1>
         <div className="mb-9">
@@ -60,7 +60,7 @@ export default function Text1() {
             }}
           />
         </div>
-        <Separator />
+        <Separator /> */}
 
         <div>
       <h1 className="text-[#000000] mt-9 text-base font-semibold">Templates</h1>

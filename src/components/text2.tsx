@@ -6,6 +6,8 @@ import { Separator } from './ui/separator';
 import { useState } from 'react';
 import template1  from '../assets/images/template1.png';
 import template2 from '../assets/images/template2.png';
+import Text2_Template1 from './text2_template1';
+import Text2_Template2 from './text2_template2';
 
 
 export default function Text2() {
@@ -42,7 +44,7 @@ export default function Text2() {
   return (
     <div className="flex ">
       <div className="w-1/3 flex flex-col  h-full border-[#D4D4D4] rounded-b-lg mt-4 ">
-        <h1 className="text-[#000000] mb-5 text-base font-semibold">
+        {/* <h1 className="text-[#000000] mb-5 text-base font-semibold">
           Describe about the product
         </h1>
         <div className="mb-9">
@@ -61,7 +63,7 @@ export default function Text2() {
             }}
           />
         </div>
-        <Separator />
+        <Separator /> */}
 
         <div>
           <h1 className="text-[#000000] mt-9 text-base font-semibold">
@@ -98,7 +100,15 @@ export default function Text2() {
       </div>
       <Separator orientation="vertical" className="" />
       <div className="w-2/3 bg-white p-8">
-        <div className="w-full h-[350px] rounded-md border border-[#623FC4] p-4 overflow-auto">{description}</div>
+        <div className="w-full h-[500px] rounded-md border border-[#623FC4] p-4 overflow-auto">
+          {
+            selectedTemplate?
+            selectedTemplate === 'template1'?
+            <Text2_Template1 />:<Text2_Template2 />
+            :
+            <></>
+          }
+        </div>
       </div>
     </div>
     // <div>Hi</div>
