@@ -6,6 +6,7 @@ import github48 from '../assets/icons/github48.png';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userApi } from '@/services/loginApi';
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 
 interface login {
   isOauth: boolean;
@@ -28,12 +29,18 @@ export default function Login({ isOauth  }: login) {
       userApi.register(payload,(resp : any ) => {
         localStorage.setItem('user-token',resp.token);
         navigate('/genvision/:userId');
+        toast.success(resp.message)
+      },(err : any) => {
+        toast.error(err.message);
       })
     }
     else {
       userApi.login(payload,(resp : any ) => {
-        localStorage.setItem('user-token',resp.token);
+        localStorage.setItem('user-token', resp.token);
         navigate('/genvision/:userId');
+        toast.success(resp.message)
+      },(err : any) => {
+        toast.error(err.message);
       })
     }
   };
