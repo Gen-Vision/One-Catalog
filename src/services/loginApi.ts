@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-
+import {  toast } from 'react-toastify';
 interface ApiResponse<T> {
   data: T;
 }
@@ -37,16 +37,17 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("user-token");
+      toast.error('401 UnAuthorized');
     }
     return Promise.reject(error);
   }
 );
 
 export const userApi = {
-  register: (payload: LoginPayload, onSuccess: Function) => {
-    api.post<ApiResponse<any>>("/user/register", payload).then((resp) => onSuccess && onSuccess(resp.data));
+  register: (payload: LoginPayload, onSuccess: Function,onError :Function) => {
+    api.post<ApiResponse<any>>("/user/register", payload).then((resp) => onSuccess && onSuccess(resp.data)).catch(err => onError && onError(err.response?.data));
   },
-  login: (payload: LoginPayload, onSuccess: Function) => {
-    api.post<ApiResponse<any>>("/user/login", payload).then((resp) => onSuccess && onSuccess(resp.data));
+  login: (payload: LoginPayload, onSuccess: Function ,onError :Function) => {
+    api.post<ApiResponse<any>>("/user/login", payload).then((resp) => onSuccess && onSuccess(resp.data)).catch(err => onError && onError(err.response?.data));
   }
 };

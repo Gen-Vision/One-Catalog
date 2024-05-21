@@ -7,7 +7,6 @@ const server = createServer(app);
 
 const cors = require("cors");
 const userRouter = require("./routes/user.router");
-const { error } = require("console");
 
 app.use(express.json());
 app.use(cors());
