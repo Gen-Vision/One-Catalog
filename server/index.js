@@ -7,10 +7,12 @@ const server = createServer(app);
 
 const cors = require("cors");
 const userRouter = require("./routes/user.router");
+const productRouter = require("./routes/product.router");
 
 app.use(express.json());
 app.use(cors());
 app.use("/user", userRouter);
+app.use('/user',productRouter);
 
 app.get("/", (req, res) => {
   res.json({ ans: "SERVER IS RUNNING" });
@@ -36,6 +38,7 @@ app.use((error, req, res, next) => {
   res.status(statusCode).json({
     message: message,
   });
+  console.log(error);
 });
 
 const PORT = process.env.PORT || 3002;

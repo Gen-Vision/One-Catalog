@@ -32,7 +32,6 @@ export default function Login({ isOauth  }: login) {
   })
   const handleSubmit = (e:any) => {
     e.preventDefault();
-    // logic
     let payload = {
       username : emailId,
       password : password
