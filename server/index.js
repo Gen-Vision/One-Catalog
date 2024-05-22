@@ -8,11 +8,13 @@ const server = createServer(app);
 const cors = require("cors");
 const userRouter = require("./routes/user.router");
 const productRouter = require("./routes/product.router");
+const imageEditRouter = require("./routes/imageEdit.router");
 
 app.use(express.json());
 app.use(cors());
 app.use("/user", userRouter);
 app.use('/user',productRouter);
+app.use('/user',imageEditRouter);
 
 app.get("/", (req, res) => {
   res.json({ ans: "SERVER IS RUNNING" });

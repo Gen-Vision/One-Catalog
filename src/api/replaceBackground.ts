@@ -2,13 +2,15 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import FormData from 'form-data';
 import { createReadStream } from 'fs';
+import fetchClipdropKey from './fetchClipdropKey';
 
 const replaceBackground = async (imageFilePath: string, prompt: string) => {
   try {
     const data = new FormData();
     data.append('image_file', createReadStream(imageFilePath));
     data.append('prompt', prompt);
-    const apiKey = process.env.REACT_APP_CLIP_DROP_API_KEY;
+    
+    const apiKey = await fetchClipdropKey();
 
     const config: AxiosRequestConfig = {
       method: 'post',

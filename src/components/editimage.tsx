@@ -127,6 +127,7 @@ export default function EditImage() {
         if (feature === 'Upscale') {
           setExpectedWidth(0);
           setExpectedHeight(0);
+          setModalOpen(false);
         }
         return prevSelectedFeatures.filter(item => item !== feature);
       }
