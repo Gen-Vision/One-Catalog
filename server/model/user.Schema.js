@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { USER } = require("../constants");
 const { v4: uuidv4 } = require("uuid");
+const Product = require("./product.Schema");
 const userSchema = new mongoose.Schema(
   {
     _id: {
@@ -18,6 +19,7 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
     },
+    products :[{ type: String, ref: "Product" }]
   },
   {
     _id: false, // Disable the _id field
@@ -25,4 +27,5 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+module.exports = User;
