@@ -4,6 +4,7 @@ const router = express.Router();
 const { getToken, verifyToken } = require("../utils/tokenUtils");
 
 const { handleError } = require("../utils/errorUtils.js");
+const { isValidEmail, encryptPassword, checkPassword } = require("../utils/AuthUtils.js");
 
 
 router
@@ -13,7 +14,8 @@ router
       const user = await User.findById(userId);
       if (!user) next(handleError(404, "User does not exist"));
       const token = getToken(userId);
-      res.status(200).json({ message: "Logged In", token: token, _id: userId });
+      var userName = user.username.split('@');
+      res.status(200).json({ message: "Logged In", token: token,user : userName[0]  });
     } catch (error) {
       next(error);
     }
@@ -21,18 +23,18 @@ router
   .post("/login", async (req, res, next) => {
     try {
       let { username, password } = req.body;
-      if (!username || !password) next(handleError(400, "Invalid Data"));
+      if (!username || !password || !isValidEmail(username)) next(handleError(400, "Invalid Username or password"));
 
       const user = await User.findOne({ username: username });
 
       if (!user) next(handleError(404, "User does not exist"));
-      if (user.password !== password)
-        next(handleError(400, "Wrong password or username"));
+      if (!checkPassword(password,user.password))
+        next(handleError(401, "Wrong password"));
       const token = getToken(user._id);
-
+      var userName = username.split('@');
       res
         .status(200)
-        .json({ message: "Logged In", token: token, _id: user._id });
+        .json({ message: "Logged In", token: token, user : userName[0] });
     } catch (error) {
       next(error);
     }
@@ -40,7 +42,7 @@ router
   .post("/register", async (req, res, next) => {
     try {
       let { username, password, name } = req.body;
-      if (!username || !password)
+      if (!username || !password || !isValidEmail(username))
         next(handleError(400, "Invalid Username or password"));
 
       const existingUser = await User.findOne({ username: username });
@@ -48,17 +50,17 @@ router
 
       const body = {
         username: username,
-        password: password,
+        password: encryptPassword(password),
         name,
       };
 
-      const newUser = await User.create({ ...body });
-
+      const newUser = await userModel.create({ ...body });
+      var userName = username.split('@');
       res.status(200).json({
         statusCode: 200,
         message: "User Created",
         token: getToken(newUser._id),
-        _id: newUser._id,
+        user : userName[0]
       });
     } catch (error) {
       next(error);

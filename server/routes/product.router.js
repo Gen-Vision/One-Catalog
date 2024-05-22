@@ -37,7 +37,6 @@ router
     const { productId: id } = req.params;
     try {
       const product = await Product.findById(id);
-      console.log(!product, product === null);
       if (!product || product === null) {
         next(handleError(404, 'Product not found'));
       }
