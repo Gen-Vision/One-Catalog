@@ -1,8 +1,10 @@
 const fetchClipdropKey = async (): Promise<string> => {
     try {
-      const response = await fetch('/api/clipdrop-key');
+      const response = await fetch('/user/clipdrop-key');
       const data = await response.json();
       if (response.ok) {
+        console.log(data.apiKey);
+        
         return data.apiKey;
       } else {
         throw new Error('Failed to fetch API key');

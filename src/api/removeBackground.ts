@@ -6,6 +6,7 @@ import fetchClipdropKey from './fetchClipdropKey';
 
 const removeBackground = async (imageFileUrl: string) => {
   try {
+    console.log('here');
     const data = new FormData();
     
     data.append('image_file', await fetch(imageFileUrl).then((res) => res.blob()));
@@ -21,7 +22,7 @@ const removeBackground = async (imageFileUrl: string) => {
     };
 
     const response = await axios(config);
-    // console.log(response);
+    console.log(response);
     
     return response.data;
   } catch (error) {
