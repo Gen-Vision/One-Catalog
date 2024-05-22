@@ -8,6 +8,7 @@ import removeBackground from '@/api/removeBackground';
 import responseImage from '../assets/images/response.png';
 import imageUpscale from '@/api/imageUpscale';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface ProductData {
   id: string;
@@ -44,57 +45,68 @@ export default function EditImage() {
 
 
   // Flatten all uploadedImages arrays into a single array
+  // useEffect(() => {
+  //   const processImage = async () => {
+  //     if (generateButtonPressed) {
+  //       console.log("YES");
+        
+  //       // Call API and replace uploaded images
+  //       if (selectedImage === null) {
+  //         toast.error('Please select a picture and generate again');
+  //       } else {
+  //         // let editedImage: string | null = null;
+  
+  //         // Check if removeBackground is in selectedFeatures
+  //         if (selectedFeatures.includes('removeBackground')) {
+  //           try {
+  //             console.log("REmove bg");
+              
+  //             const removeBgResponse = await removeBackground(selectedImage);
+  //             // Use the response as the edited image
+  //             setEditedImage(URL.createObjectURL(removeBgResponse));
+  //           } catch (error) {
+  //             console.error('Error removing background:', error);
+  //             // Handle error
+  //           }
+  //         }
+  
+  //         // Check if upscale is in selectedFeatures
+  //         if (selectedFeatures.includes('upscale') && editedImage) {
+  //           try {
+  //             // Assuming upscale is an asynchronous function
+  //             const upscaleResponse = await imageUpscale(editedImage, expectedWidth, expectedHeight);
+  //             // Use the response as the edited image
+  //             setEditedImage(URL.createObjectURL(upscaleResponse));
+  //           } catch (error) {
+  //             console.error('Error upscaling image:', error);
+  //             // Handle error
+  //           }
+  //         }
+  
+  //         // Set the edited image in state
+  //         // if (editedImage) {
+  //         //   setEditedImage(editedImage);
+  //         //   setUploadedImages([editedImage]);
+  //         // }
+  //       }
+  //       setEditedImage(responseImage);
+  //     } else {
+  //       if (product) {
+  //         const allImages: string[] = product.uploadedImages;
+  //         setUploadedImages(allImages);
+  //       }
+  //     }
+  //   };
+  //   processImage();
+  // }, [generateButtonPressed]);
+
   useEffect(() => {
-    const processImage = async () => {
-      if (generateButtonPressed) {
-        // Call API and replace uploaded images
-        if (selectedImage === null) {
-          alert('Please select a picture and generate again');
-        } else {
-          // let editedImage: string | null = null;
-  
-          // Check if removeBackground is in selectedFeatures
-          if (selectedFeatures.includes('removeBackground')) {
-            try {
-              const removeBgResponse = await removeBackground(selectedImage);
-              // Use the response as the edited image
-              setEditedImage(URL.createObjectURL(removeBgResponse));
-            } catch (error) {
-              console.error('Error removing background:', error);
-              // Handle error
-            }
-          }
-  
-          // Check if upscale is in selectedFeatures
-          if (selectedFeatures.includes('upscale') && editedImage) {
-            try {
-              // Assuming upscale is an asynchronous function
-              const upscaleResponse = await imageUpscale(editedImage, expectedWidth, expectedHeight);
-              // Use the response as the edited image
-              setEditedImage(URL.createObjectURL(upscaleResponse));
-            } catch (error) {
-              console.error('Error upscaling image:', error);
-              // Handle error
-            }
-          }
-  
-          // Set the edited image in state
-          // if (editedImage) {
-          //   setEditedImage(editedImage);
-          //   setUploadedImages([editedImage]);
-          // }
-        }
-        setEditedImage(responseImage);
-      } else {
-        if (product) {
-          const allImages: string[] = product.uploadedImages;
-          setUploadedImages(allImages);
-        }
-      }
-    };
-  
-    processImage();
-  }, [generateButtonPressed]);
+    
+    if (product) {
+      const allImages: string[] = product.uploadedImages;
+      setUploadedImages(allImages);
+    }
+  },[])
   
     
   const handleImageClick = (imageSrc: string) => {
@@ -110,10 +122,59 @@ export default function EditImage() {
     return `repeat(${numberOfColumns}, minmax(0, 1fr))`;
   };
 
-  const handleGenerateButtonClick = () => {
-    // Set the button pressed state to trigger the effect
-    setGenerateButtonPressed(true);
+  // const handleGenerateButtonClick = () => {
+  //   // Set the button pressed state to trigger the effect
+  //   // console.log("pressed");
+  //   // if(generateButtonPressed===true) console.log("Yes");
+    
+  //   setGenerateButtonPressed(true);
+  // };
+
+  const handleGenerateButtonClick = async () => {
+    try {
+      if (!selectedImage) {
+        toast.error('Please select a picture and generate again');
+        return;
+      }
+  
+      let processedImage = selectedImage;
+  
+      // Check if removeBackground is in selectedFeatures
+      if (selectedFeatures.includes('removeBackground')) {
+        try {
+          console.log("Remove background");
+          const removeBgResponse = await removeBackground(selectedImage);
+          // Use the response as the processed image
+          processedImage = URL.createObjectURL(removeBgResponse);
+        } catch (error) {
+          console.error('Error removing background:', error);
+          // Handle error
+          return;
+        }
+      }
+  
+      // Check if upscale is in selectedFeatures
+      if (selectedFeatures.includes('upscale')) {
+        try {
+          console.log("Upscale");
+          const upscaleResponse = await imageUpscale(processedImage, expectedWidth, expectedHeight);
+          // Use the response as the processed image
+          processedImage = URL.createObjectURL(upscaleResponse);
+        } catch (error) {
+          console.error('Error upscaling image:', error);
+          // Handle error
+          return;
+        }
+      }
+  
+      // Set the processed image in state
+      setEditedImage(processedImage);
+    } catch (error) {
+      console.error('Error processing image:', error);
+      // Handle error
+    }
   };
+  
 
   const handleFeatureSelect = (feature: string, selected: boolean) => {
     setSelectedFeatures(prevSelectedFeatures => {
@@ -127,6 +188,7 @@ export default function EditImage() {
         if (feature === 'Upscale') {
           setExpectedWidth(0);
           setExpectedHeight(0);
+          setModalOpen(false);
         }
         return prevSelectedFeatures.filter(item => item !== feature);
       }

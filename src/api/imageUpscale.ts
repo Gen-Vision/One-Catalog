@@ -1,7 +1,6 @@
-// api/imageUpscale.ts
 import axios, { AxiosRequestConfig } from 'axios';
 import FormData from 'form-data';
-// import { createReadStream } from 'fs';
+import fetchClipdropKey from './fetchClipdropKey';
 
 const imageUpscale = async (imageFileUrl: string, targetWidth: number, targetHeight: number) => {
   try {
@@ -10,7 +9,8 @@ const imageUpscale = async (imageFileUrl: string, targetWidth: number, targetHei
     data.append('target_width', targetWidth.toString());
     data.append('target_height', targetHeight.toString());
 
-    const apiKey = process.env.REACT_APP_CLIP_DROP_API_KEY;
+    // Fetch the API key from backend
+    const apiKey = await fetchClipdropKey();
 
     const config: AxiosRequestConfig = {
       method: 'post',

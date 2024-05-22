@@ -5,7 +5,7 @@ export default function Sidebar() {
     <div className="flex flex-col h-screen w-20 shadow-lg shadow-[#dbdbde] dark:shadow-slate-900">
       <div className="flex items-center justify-center h-16">
         {/* <img src={logo} alt="Logo" className="w-9 h-8" /> */}
-        <a href="/"><BrandLogo /></a>
+        <a href="/genvision/:userId/dashboard"><BrandLogo /></a>
       </div>
       <div className="flex items-center justify-center m-3 rounded-lg py-2 px-3 bg-[#F1EEFA99]">
         <svg
