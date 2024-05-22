@@ -40,12 +40,10 @@ router
       if (!product || product === null) {
         next(handleError(404, 'Product not found'));
       }
-      res
-        .status(200)
-        .json({
-          message: 'All Images for the product ',
-          productImages: product?.uploadedImages
-        });
+      res.status(200).json({
+        message: 'All Images for the product ',
+        productImages: product?.uploadedImages,
+      });
     } catch (error) {
       next(error);
     }
@@ -71,7 +69,20 @@ router
   .put('/updateProduct/:productId', verifyToken, async (req, res, next) => {
     const { productId: id } = req.params;
     try {
-      const product = await Product.findByIdAndUpdate(id, req.body, {
+      let updatedProduct = req.body;
+
+      if (updatedProduct.uploadedImages) {
+        const existingProduct = await Product.findById(id);
+        if (existingProduct) {
+          updatedProduct.uploadedImages = [
+            ...new Set([
+                ...existingProduct.uploadedImages,
+                ...updatedProduct.uploadedImages
+            ])
+          ];
+        }
+      }
+      const product = await Product.findByIdAndUpdate(id, updatedProduct, {
         new: true,
       });
       if (!product) {
