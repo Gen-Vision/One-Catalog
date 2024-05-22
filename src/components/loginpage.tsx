@@ -3,7 +3,7 @@ import linkedIn48 from '../assets/icons/linkedIn48.png';
 import microsoft48 from '../assets/icons/microsoft48.png';
 import google48 from '../assets/icons/google48.png';
 import github48 from '../assets/icons/github48.png';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userApi } from '@/services/loginApi';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
@@ -18,6 +18,18 @@ export default function Login({ isOauth  }: login) {
   const [isRegister,setIsRegister] = useState<boolean>(false);
 
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(localStorage.getItem('user-token')){
+      userApi.refreshLogin((resp : any)=>{
+        localStorage.setItem('user-token',resp.token);
+        navigate('/genvision/:userId');
+      },(err : any) =>{
+        localStorage.removeItem('user-token');
+        toast.error(err.message)
+      })
+    }
+  })
   const handleSubmit = (e:any) => {
     e.preventDefault();
     // logic

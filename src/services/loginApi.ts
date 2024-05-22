@@ -49,5 +49,8 @@ export const userApi = {
   },
   login: (payload: LoginPayload, onSuccess: Function ,onError :Function) => {
     api.post<ApiResponse<any>>("/user/login", payload).then((resp) => onSuccess && onSuccess(resp.data)).catch(err => onError && onError(err.response?.data));
-  }
+  },
+  refreshLogin :(onSuccess: Function,onError :Function) => {
+    api.get<ApiResponse<any>>("/user/refreshLogin").then((resp) => onSuccess && onSuccess(resp.data)).catch(err => onError && onError(err.response?.data));
+  },
 };
