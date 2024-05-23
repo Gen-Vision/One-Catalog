@@ -182,20 +182,26 @@ export default function EditImage() {
   };
 
   const handleSaveButton = () => {
-    console.log(uploadedImages);
-    console.log(editedImage);
-    setUploadedImages([...uploadedImages,editedImage!]);
-    const updatedProduct = { ...product, uploadedImages };
-    
-    const products: ProductData[] = JSON.parse(localStorage.getItem('product') || '[]');
-    const existingProductIndex = products.findIndex(p => p.id === productId);
-    products[existingProductIndex] = updatedProduct;
-
-    localStorage.setItem('product', JSON.stringify(products));
-    
-    console.log(uploadedImages);
+    // First, update the uploadedImages state
+    setUploadedImages((prevUploadedImages) => {
+      const updatedImages = [...prevUploadedImages, editedImage!];
+  
+      // Create the updated product with the new images
+      const updatedProduct = { ...product, uploadedImages: updatedImages };
+  
+      // Update localStorage with the new product data
+      const products: ProductData[] = JSON.parse(localStorage.getItem('product') || '[]');
+      const existingProductIndex = products.findIndex(p => p.id === productId);
+      products[existingProductIndex] = updatedProduct;
+      localStorage.setItem('product', JSON.stringify(products));
+  
+      console.log(updatedImages);
+      return updatedImages;
+    });
+  
     setEditedImageStatus(false);
-  }
+  };
+  
   
 
   const handleFeatureSelect = (feature: string, selected: boolean) => {
