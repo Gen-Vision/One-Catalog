@@ -102,6 +102,8 @@ export default function Dashboard() {
   };
 
   const handleLogOut = () => {
+    localStorage.removeItem('user-token');
+    localStorage.removeItem('userId');
     navigate("/");
   }
 
@@ -152,12 +154,16 @@ export default function Dashboard() {
 
             <button
               onClick={handleLogOut}
+              className='relative group'
             >
             <img
                 className="inline-block align-middle pr-4 pb-8"
                 src={dlogout}
                 alt="logout"
               />
+                <span className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  Logout
+                </span>
               </button>
         </div>
       </div>
