@@ -97,3 +97,12 @@ export function downloadImage(uri: string, name: string) {
     link.remove()
   }, 100)
 }
+
+export function generateUserId(email: string): string {
+  const localPart = email;
+  let hexString = '';
+  for (let i = 0; i < localPart.length; i++) {
+    hexString += localPart.charCodeAt(i).toString(16);
+  }
+  return hexString;
+}

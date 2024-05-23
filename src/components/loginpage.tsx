@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userApi } from '@/services/loginApi';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
+import { generateUserId } from '@/lib/utils';
 
 interface login {
   isOauth: boolean;
@@ -22,10 +23,13 @@ export default function Login({ isOauth  }: login) {
   useEffect(()=>{
     if(localStorage.getItem('user-token')){
       userApi.refreshLogin((resp : any)=>{
+        const userId = generateUserId(emailId);
         localStorage.setItem('user-token',resp.token);
-        navigate('/genvision/:userId');
+        localStorage.setItem('userId',userId);
+        navigate(`/genvision/${userId}`);
       },(err : any) =>{
         localStorage.removeItem('user-token');
+        localStorage.removeItem('userId');
         toast.error(err.message)
       })
     }
@@ -36,10 +40,12 @@ export default function Login({ isOauth  }: login) {
       username : emailId,
       password : password
     }
+    const userId = generateUserId(emailId);
     if(isRegister){
       userApi.register(payload,(resp : any ) => {
         localStorage.setItem('user-token',resp.token);
-        navigate('/genvision/:userId');
+        localStorage.setItem('userId',userId);
+        navigate(`/genvision/${userId}`);
         toast.success(resp.message)
       },(err : any) => {
         toast.error(err.message);
@@ -48,7 +54,8 @@ export default function Login({ isOauth  }: login) {
     else {
       userApi.login(payload,(resp : any ) => {
         localStorage.setItem('user-token', resp.token);
-        navigate('/genvision/:userId');
+        localStorage.setItem('userId',userId);
+        navigate(`/genvision/${userId}`);
         toast.success(resp.message)
       },(err : any) => {
         toast.error(err.message);
