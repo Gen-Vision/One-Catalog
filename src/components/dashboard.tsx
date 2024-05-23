@@ -4,6 +4,7 @@ import { Card, CardHeader, Typography, CardBody, Avatar, Button, Input } from "@
 import { useNavigate, useParams } from "react-router-dom";
 import BulkUpload from "./bulk-upload";
 import Navbar from './navbar2';
+import { productApi } from '../services/productApi';
 
 interface TableRow {
   no: number;
@@ -14,21 +15,23 @@ interface TableRow {
   product_category: string;
   price: string;
   stock_units: number;
+  manufacturing_date: string;
   expiry_date: string;
 }
 
 interface ProductData {
-  id: string;
+  productId: string;
   category: string;
   uploadedImages: string;
   brand?: string | undefined;
   productName?: string | undefined;
   quantity?: number | undefined;
   price?: number | undefined;
+  manufacturingDate?: string | undefined;
   expiryDate?: string | undefined;
 }
 
-const TABLE_HEAD = ["", "No", "Image", "Product ID", "Brand", "Product Name", "Product Category", "Price", "Stock units", "Expiry Date"];
+const TABLE_HEAD = ["", "No", "Image", "Product ID", "Brand", "Product Name", "Product Category", "Price", "Stock units", "Manufacturing Date", "Expiry Date"];
 
 const PAGE_SIZE = 10;
 
@@ -54,20 +57,46 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Retrieve product data from localStorage
-    const storedProductData: ProductData[] = JSON.parse(localStorage.getItem('product') || '[]');
-
-    // Map the stored product data to TableRow format
-    const transformedRows: TableRow[] = storedProductData.map((product, index) => ({
+    // const storedProductData: ProductData[] = 
+    productApi.getProducts((data:any) => {
+        // Map the stored product data to TableRow format
+        console.log(data);
+        
+    const transformedRows: TableRow[] = data.products.map((product:ProductData, index:number) => ({
       no: index + 1,
       img: product.uploadedImages[0],
-      product_id: product.id,
+      product_id: product.productId,
       brand: product.brand || '',
       product_name: product.productName || '',
       product_category: product.category || '',
       price: product.price ? `Rs. ${product.price}` : '',
       stock_units: product.quantity || 0,
+      manufacturing_date: product.manufacturingDate || '',
       expiry_date: product.expiryDate || '',
     }));
+
+    
+    setTableRows(transformedRows);
+
+    },(error:any) => {
+        // Handle error (e.g., show error message)
+        console.error('Error creating product:', error);
+    }
+  );
+
+    // Map the stored product data to TableRow format
+    // const transformedRows: TableRow[] = storedProductData.map((product, index) => ({
+    //   no: index + 1,
+    //   img: product.uploadedImages[0],
+    //   product_id: product.id,
+    //   brand: product.brand || '',
+    //   product_name: product.productName || '',
+    //   product_category: product.category || '',
+    //   price: product.price ? `Rs. ${product.price}` : '',
+    //   stock_units: product.quantity || 0,
+    //   manufacturing_date_date: product.manufacturingDate || '',
+    //   expiry_date: product.expiryDate || '',
+    // }));
 
     // Now, transformedRows contains the data in the TableRow format
     // console.log(transformedRows);
@@ -87,7 +116,7 @@ export default function Dashboard() {
     // fetchData();
 
     // Using transformedRows directly for now
-    setTableRows(transformedRows);
+    // setTableRows(transformedRows);
   }, []);
 
   const handleAddNewProductClick = () => {
@@ -232,7 +261,7 @@ export default function Dashboard() {
             </thead>
             <tbody>
               {visibleRows.map(
-                ({ no, img, product_id, brand, product_name, product_category, price, stock_units, expiry_date }, index) => {
+                ({ no, img, product_id, brand, product_name, product_category, price, stock_units, manufacturing_date,expiry_date }, index) => {
                   const isLast = index === visibleRows.length - 1;
                   const classes = isLast
                     ? "p-4"
@@ -328,6 +357,16 @@ export default function Dashboard() {
                           className="font-normal opacity-70"
                         >
                           {stock_units}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          placeholder="a"
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {manufacturing_date}
                         </Typography>
                       </td>
                       <td className={classes}>

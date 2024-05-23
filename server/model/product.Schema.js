@@ -6,6 +6,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: () => PRODUCT + ":" + uuidv4(),
     },
+    productId:{
+        type: String,
+        required: true,
+        unique: true,
+    },
     category: {
         type: String,
         required: true
@@ -31,6 +36,12 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: 0
+    },
+    epxiryDate: {
+        type: String,
+    },
+    manufacturingDate: {
+        type: String,
     }
 },  {
     _id: false, // Disable the _id field
