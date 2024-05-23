@@ -1,11 +1,23 @@
 // import { ModeToggle } from './mode-toggle';
 
+import { useNavigate, useParams } from "react-router-dom";
+
 export default function Sidebar() {
+
+  const {userId} = useParams();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('user-token');
+    localStorage.removeItem('userId');
+    navigate('/');
+  }
+
   return (
     <div className="flex flex-col h-screen w-20 shadow-lg shadow-[#dbdbde] dark:shadow-slate-900">
       <div className="flex items-center justify-center h-16">
         {/* <img src={logo} alt="Logo" className="w-9 h-8" /> */}
-        <a href="/genvision/:userId/dashboard"><BrandLogo /></a>
+        <a href={`/genvision/${userId}`}><BrandLogo /></a>
       </div>
       <div className="flex items-center justify-center m-3 rounded-lg py-2 px-3 bg-[#F1EEFA99]">
         <svg
@@ -38,8 +50,9 @@ export default function Sidebar() {
         {/* Your dropdown menu will go here */}
       </nav>
       {/* <ModeToggle /> */}
+      {/* Logout */}
       <div className="flex flex-col items-center" style={{position:'absolute',bottom:'0px'}}>
-        <button className="w-12 h-12 p-3 mb-2 rounded-full bg-slate-200 hover:bg-slate-100 dark:hover:bg-slate-300">
+        <button className="w-12 h-12 p-3 mb-2 rounded-full bg-slate-200 hover:bg-slate-100 dark:hover:bg-slate-300" onClick={handleLogout}>
           <svg
             width="25"
             height="28"

@@ -1,14 +1,19 @@
+import React, { useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
-import {useState} from 'react';
 import UploadAdditionalImage from './uploadadditionalimage';
 
 const NavBar = () => {
-  const {productId} = useParams();
-  const [isModalOpen,setIsModalOpen] = useState<boolean>(false);
-  
+  const { userId, productId } = useParams();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const handleToggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
   return (
     <>
-        <nav className='mt-2 navbar-hover-glow' style={{ borderBottom: '1px solid #ccc',paddingTop:'10px', paddingBottom:'20',marginRight: '10px' }}>
+      {/* Navigation bar */}
+      <nav className='mt-2 navbar-hover-glow' style={{ borderBottom: '1px solid #ccc',paddingTop:'10px', paddingBottom:'20',marginRight: '10px' }}>
       {/* <div style={{marginLeft:'40px'}} onClick = {()=>setIsModalOpen(!isModalOpen)}>
           Click
       </div> */}
@@ -62,64 +67,37 @@ const NavBar = () => {
         )
 }
     </nav>
-    <div className="bg-[#FFFFFF] py-1 px-2 flex justify-between items-center">
-      <div className="flex items-center space-x-4">
-        {[
-          { to: `/genvision/:userId/${productId}/edit`, title: 'Edit Image' },
-          { to: `/genvision/:userId/${productId}/mockup/1`, title: 'Mockup' },
-          { to: `/genvision/:userId/${productId}/text`, title: 'Text' },
-          { to: `/genvision/:userId/${productId}/social-media`, title: 'Social Media' },
-          { to: `/genvision/:userId/${productId}/3d-model`, title: '3D Model' }
-        ].map(t => (
-          <NavLink
-            to={t.to}
-            className={({ isActive }) =>
-              isActive
-                ? 'text-[#623FC4] bg-[#F1EEFA] rounded px-2 py-1'
-                : 'rounded px-2 py-1'
-            }
-          >
-            <span className="text-Black font-semibold tracking-wide px-2 py-1 ">
-              {t.title}
-            </span>
-          </NavLink>
-        ))}
 
-        {/* <a
-          href="#"
-          className="text-Black font-semibold tracking-wide px-2 py-1 hover:text-[#623FC4] hover:bg-[#F1EEFA] hover:rounded-md"
-        >
-          <Link to={'/mockup'}> Mockup</Link>
-        </a>
-        <a
-          href=""
-          className="text-Black font-semibold tracking-wide px-2 py-1 hover:text-[#623FC4] hover:bg-[#F1EEFA] hover:rounded-md"
-        >
-          Text
-        </a>
-        <a
-          href="#"
-          className="text-Black font-semibold tracking-wide px-2 py-1 hover:text-[#623FC4] hover:bg-[#F1EEFA] hover:rounded-md"
-        >
-          <Link to={'/socialMedia'}> Social Media</Link>
-        </a>
-        <a
-          href="#"
-          className="text-Black font-semibold tracking-wide px-2 py-1 hover:text-[#623FC4] hover:bg-[#F1EEFA] hover:rounded-md"
-        >
-          <Link to={'/3dModel'}> 3D Model</Link>
-        </a> */}
+      {/* Secondary navigation */}
+      <div className="bg-[#FFFFFF] py-1 px-2 flex justify-between items-center">
+        {/* Navigation links */}
+        <div className="flex items-center space-x-4">
+          {[
+            { to: `/genvision/${userId}/${productId}/edit`, title: 'Edit Image' },
+            { to: `/genvision/${userId}/${productId}/mockup/1`, title: 'Mockup' },
+            { to: `/genvision/${userId}/${productId}/text`, title: 'Text' },
+            { to: `/genvision/${userId}/${productId}/social-media`, title: 'Social Media' },
+            { to: `/genvision/${userId}/${productId}/3d-model`, title: '3D Model' },
+          ].map((link) => (
+            <NavLink
+              to={link.to}
+              className={({ isActive }) =>
+                isActive
+                  ? 'text-[#623FC4] bg-[#F1EEFA] rounded px-2 py-1'
+                  : 'rounded px-2 py-1'
+              }
+            >
+              <span className="text-Black font-semibold tracking-wide px-2 py-1">{link.title}</span>
+            </NavLink>
+          ))}
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex space-x-4">
+          <button className="bg-white border border-purple-500 font-semibold hover:bg-[#623FC4] hover:text-white text-Black py-2 px-4 rounded">Download</button>
+          <button className="bg-[#623FC4] font-semibold border hover:bg-white hover:text-black hover:border hover:border-[#623FC4] text-white py-2 px-4 rounded">Publish</button>
+        </div>
       </div>
-      <div className="flex space-x-4">
-        <button className="bg-white border border-purple-500 font-semibold hover:bg-[#623FC4] hover:text-white  text-Black py-2 px-4 rounded">
-          Download
-        </button>
-        <button className="bg-[#623FC4] font-semibold border hover:bg-white hover:text-black hover:border hover:border-[#623FC4] text-white py-2 px-4 rounded">
-          Publish
-        </button>
-        
-      </div>
-    </div>
     </>
   );
 };

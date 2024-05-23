@@ -100,7 +100,33 @@ export default function Dashboard() {
     if (isModalOpen) window.location.reload();
   };
 
-
+  const handleExportAsZip = () => {
+    // Convert product data to CSV format
+    const storedProductData: ProductData[] = JSON.parse(localStorage.getItem('product') || '[]');
+    const csvData = convertToCSV(storedProductData);
+  
+    // Create a Blob object with the CSV data
+    const blob = new Blob([csvData], { type: 'text/csv' });
+  
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'product_data.csv';
+  
+    // Trigger download
+    link.click();
+  };
+  
+  const convertToCSV = (data: ProductData[]): string => {
+    const header = Object.keys(data[0]).join(',');
+    const rows = data.map(product =>
+      Object.values(product)
+        .map(value => `"${value}"`)
+        .join(',')
+    );
+    return `${header}\n${rows.join('\n')}`;
+  };
+  
 
   return (
     <>
@@ -171,8 +197,8 @@ export default function Dashboard() {
                 // size='sm'
                 className="outline-none border-gray-500 rounded-md focus:outline-none focus:border-blue-500"
               />
-              <Button className=" border-[gray]" placeholder='a' variant="outlined" size="sm">
-                Export as ZIP
+              <Button className=" border-[gray]" placeholder='a' variant="outlined" size="sm" onClick={handleExportAsZip}>
+                Export as CSV
               </Button>
               <Button placeholder='a' className="text-gray border shadow-[none]">
                 <TrashIcon strokeWidth={2} className="h-8 w-8" />
@@ -213,7 +239,7 @@ export default function Dashboard() {
                     : "p-4 border-b border-blue-gray-50";
 
                   return (
-                    <tr key={no} onClick={() => navigate(`/genvision/userId/${product_id}`)} style={{ cursor: 'pointer' }}>
+                    <tr key={no} onClick={() => navigate(`/genvision/${userId}/${product_id}`)} style={{ cursor: 'pointer' }}>
                       <td className={classes}>
                       <div
                         onClick={(e) => {
