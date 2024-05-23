@@ -19,10 +19,11 @@ const removeBackground = async (imageFileUrl: string) => {
         'x-api-key': apiKey,
       },
       data: data,
+      responseType: 'blob'
     };
 
     const response = await axios(config);
-    console.log(response);
+    // console.log(response);
     
     return response.data;
   } catch (error) {

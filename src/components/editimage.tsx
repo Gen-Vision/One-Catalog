@@ -14,11 +14,11 @@ interface ProductData {
   id: string;
   category: string;
   uploadedImages: string[];
-  brand?: string | undefined;
-  productName?: string | undefined;
-  quantity?: number | undefined;
-  price?: number | undefined;
-  expiryDate?: string | undefined;
+  brand?: string;
+  productName?: string;
+  quantity?: number;
+  price?: number;
+  expiryDate?: string;
 }
 
 export default function EditImage() {
@@ -27,11 +27,12 @@ export default function EditImage() {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
-  const [generateButtonPressed, setGenerateButtonPressed] = useState(false);
+  // const [generateButtonPressed, setGenerateButtonPressed] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [expectedWidth, setExpectedWidth] = useState<number>(10);
   const [expectedHeight, setExpectedHeight] = useState<number>(10);
   const [editedImage, setEditedImage] = useState<string>();
+  const [editedImageStatus, setEditedImageStatus] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string>('');
 
   const handleSelect = (title: string) => {
@@ -41,7 +42,7 @@ export default function EditImage() {
 
   // Assume product is an array of ProductData objects
   const {productId} = useParams();
-  const product: ProductData | undefined = JSON.parse(localStorage.getItem('product') || '[]').find((p: ProductData) => p.id === productId);
+  const product: ProductData = JSON.parse(localStorage.getItem('product') || '[]').find((p: ProductData) => p.id === productId);
 
 
   // Flatten all uploadedImages arrays into a single array
@@ -131,20 +132,24 @@ export default function EditImage() {
   // };
 
   const handleGenerateButtonClick = async () => {
+    
     try {
       if (!selectedImage) {
         toast.error('Please select a picture and generate again');
+        return;
+      }
+      if(!selectedFeatures) {
+        toast.error('Please select a feature and generate again');
         return;
       }
   
       let processedImage = selectedImage;
   
       // Check if removeBackground is in selectedFeatures
-      if (selectedFeatures.includes('removeBackground')) {
+      if (selectedFeatures.includes('Remove Background')) {
         try {
-          console.log("Remove background");
           const removeBgResponse = await removeBackground(selectedImage);
-          // Use the response as the processed image
+          // Use the response as the processed image\
           processedImage = URL.createObjectURL(removeBgResponse);
         } catch (error) {
           console.error('Error removing background:', error);
@@ -156,7 +161,6 @@ export default function EditImage() {
       // Check if upscale is in selectedFeatures
       if (selectedFeatures.includes('upscale')) {
         try {
-          console.log("Upscale");
           const upscaleResponse = await imageUpscale(processedImage, expectedWidth, expectedHeight);
           // Use the response as the processed image
           processedImage = URL.createObjectURL(upscaleResponse);
@@ -173,7 +177,25 @@ export default function EditImage() {
       console.error('Error processing image:', error);
       // Handle error
     }
+    setEditedImageStatus(true);
+
   };
+
+  const handleSaveButton = () => {
+    console.log(uploadedImages);
+    console.log(editedImage);
+    setUploadedImages([...uploadedImages,editedImage!]);
+    const updatedProduct = { ...product, uploadedImages };
+    
+    const products: ProductData[] = JSON.parse(localStorage.getItem('product') || '[]');
+    const existingProductIndex = products.findIndex(p => p.id === productId);
+    products[existingProductIndex] = updatedProduct;
+
+    localStorage.setItem('product', JSON.stringify(products));
+    
+    console.log(uploadedImages);
+    setEditedImageStatus(false);
+  }
   
 
   const handleFeatureSelect = (feature: string, selected: boolean) => {
@@ -300,14 +322,32 @@ export default function EditImage() {
           </button>
         </div>
       </div>
+
       <Separator orientation="vertical" className="" />
 
-      <div className="w-2/3 bg-white p-8">
-        <div className="grid grid-cols-3 gap-4 border p-5 rounded-md border-[#623FC4]"
-          style={{
-            gridTemplateColumns: getGridTemplateColumns(4), // Adjust the number of columns as needed
-          }}
-        >
+          {
+            editedImageStatus?
+            <><div className="w-1/2 bg-white m-10 p-4 border border-violet-500">
+            <div className="flex justify-between mb-4">
+              <button className="bg-[#623FC4] p-2 font-semibold rounded-md cursor-pointer text-white" onClick={handleSaveButton}>Save</button>
+              </div>
+            <div className="flex justify-center items-center">
+              <img
+                src={editedImage!}
+                alt="abc"
+                className="max-w-full max-h-[60vh] object-cover cursor-pointer"
+              />
+            </div>
+          </div>
+          
+            </>
+            :
+            <div className="w-2/3 bg-white p-8">
+              <div className="grid grid-cols-3 gap-4 border p-5 rounded-md border-[#623FC4]"
+                style={{
+                  gridTemplateColumns: getGridTemplateColumns(4), // Adjust the number of columns as needed
+                }}
+              >
           {uploadedImages.map((imageSrc, index) => (
             <div
               key={index}
@@ -341,8 +381,9 @@ export default function EditImage() {
               )}
             </div>
           ))}
+          </div>
         </div>
-      </div>
+          }
     </div>
   );
 }

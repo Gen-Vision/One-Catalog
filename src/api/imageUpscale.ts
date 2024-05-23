@@ -20,6 +20,7 @@ const imageUpscale = async (imageFileUrl: string, targetWidth: number, targetHei
         ...data.getHeaders(),
       },
       data: data,
+      responseType: 'blob'
     };
 
     const response = await axios(config);

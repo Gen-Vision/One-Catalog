@@ -20,6 +20,7 @@ const replaceBackground = async (imageFilePath: string, prompt: string) => {
         ...data.getHeaders(),
       },
       data: data,
+      responseType: 'blob'
     };
 
     const response = await axios(config);
