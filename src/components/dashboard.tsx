@@ -3,8 +3,7 @@ import { TrashIcon, BarsArrowUpIcon, ArrowUpOnSquareStackIcon, PlusIcon } from "
 import { Card, CardHeader, Typography, CardBody, Avatar, Button, Input } from "@material-tailwind/react";
 import { useNavigate, useParams } from "react-router-dom";
 import BulkUpload from "./bulk-upload";
-import {logo2, dlogout, mllanguage} from "../assets/logo"
-import { useTranslation } from 'react-i18next';
+import Navbar from './navbar2';
 
 interface TableRow {
   no: number;
@@ -101,73 +100,11 @@ export default function Dashboard() {
     if (isModalOpen) window.location.reload();
   };
 
-  const handleLogOut = () => {
-    localStorage.removeItem('user-token');
-    localStorage.removeItem('userId');
-    navigate("/");
-  }
 
-  //language change
-  const {i18n} = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
-  const languages = ['en', 'fr', 'hi', 'bn']; 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-    setIsOpen(false);
-  };
 
   return (
     <>
-    <nav className='mt-2 navbar-hover-glow' style={{ borderBottom: '1px solid #ccc',paddingTop:'10px', paddingBottom:'20',marginRight: '10px' }}>
-      <div style={{marginLeft:'40px'}}>
-      <img
-          className="inline-block align-middle pb-8"
-          src={logo2}
-          alt="Gen_Vision"
-        />
-        <div className='float-right'>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-          >
-          <img
-              className="inline-block align-middle pr-8 pb-8"
-              src={mllanguage}
-              alt="multi language"
-            />
-            </button>
-
-             {/* language option        */}
-              {isOpen && (
-                <div className="absolute right-0 top-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-2">
-                  {languages.map((lng) => (
-                    <button
-                      key={lng}
-                      className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                      onClick={() => changeLanguage(lng)}
-                    >
-                      {lng}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-
-            <button
-              onClick={handleLogOut}
-              className='relative group'
-            >
-            <img
-                className="inline-block align-middle pr-4 pb-8"
-                src={dlogout}
-                alt="logout"
-              />
-                <span className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  Logout
-                </span>
-              </button>
-        </div>
-      </div>
-    </nav>
+    <Navbar />
 
 
       <Card placeholder="a" style={{ marginTop: '50px', zIndex:'1'}}>
