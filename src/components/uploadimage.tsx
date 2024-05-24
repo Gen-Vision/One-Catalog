@@ -109,7 +109,7 @@ const UploadImage = () => {
                     disabled={false}
                   />
                 </div>
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <InputWithSpeech
                     placeholder="Product Id Required."
                     label="Product ID"
@@ -118,7 +118,7 @@ const UploadImage = () => {
                     name="productId"
                     disabled={false}
                   />
-                </div>
+                </div> */}
                 <div className="mb-4">
                   <InputWithSpeech
                     placeholder="Category Required."

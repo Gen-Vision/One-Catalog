@@ -20,7 +20,7 @@ interface TableRow {
 }
 
 interface ProductData {
-  productId: string;
+  _id: string;
   category: string;
   uploadedImages: string;
   brand?: string | undefined;
@@ -39,6 +39,7 @@ export default function Dashboard() {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [TABLE_ROWS, setTableRows] = useState<TableRow[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [counter,setCounter] = useState<number>(0);
   const navigate = useNavigate();
   const {userId} = useParams();
 
@@ -65,7 +66,7 @@ export default function Dashboard() {
     const transformedRows: TableRow[] = data.products.map((product:ProductData, index:number) => ({
       no: index + 1,
       img: product.uploadedImages[0],
-      product_id: product.productId,
+      product_id: product._id,
       brand: product.brand || '',
       product_name: product.productName || '',
       product_category: product.category || '',
@@ -117,7 +118,7 @@ export default function Dashboard() {
 
     // Using transformedRows directly for now
     // setTableRows(transformedRows);
-  }, []);
+  }, [counter]);
 
   const handleAddNewProductClick = () => {
     navigate(`/genvision/${userId}/upload`);
@@ -128,6 +129,11 @@ export default function Dashboard() {
     // After processing, trigger a page refresh
     if (isModalOpen) window.location.reload();
   };
+
+  const handleDeleteButton = () => {
+    console.log(selectedRows);
+    setCounter(counter+1);
+  }
 
   const handleExportAsZip = () => {
     // Convert product data to CSV format
@@ -229,7 +235,7 @@ export default function Dashboard() {
               <Button className=" border-[gray]" placeholder='a' variant="outlined" size="sm" onClick={handleExportAsZip}>
                 Export as CSV
               </Button>
-              <Button placeholder='a' className="text-gray border shadow-[none]">
+              <Button placeholder='a' className="text-gray border shadow-[none]" onClick={handleDeleteButton}>
                 <TrashIcon strokeWidth={2} className="h-8 w-8" />
               </Button>
             </div>

@@ -2,9 +2,11 @@ import React, { useState, useEffect, FormEvent } from 'react';
 import UploadButton from './uploadbtn';
 import InputWithSpeech from './ui/inputWithSpeech';
 import { useNavigate, useParams } from 'react-router-dom';
+import { productApi } from '../services/productApi';
+import { toast } from 'react-toastify';
 
 interface ProductData {
-  id: string;
+  _id: string;
   category: string;
   uploadedImages: string[];
   brand?: string;
@@ -12,6 +14,7 @@ interface ProductData {
   quantity?: number;
   price?: number;
   expiryDate?: string;
+  manufacturingDate?:string;
 }
 
 const UploadAdditionalImage: React.FC = () => {
@@ -21,19 +24,22 @@ const UploadAdditionalImage: React.FC = () => {
   const { userId, productId } = useParams<{ userId: string; productId: string }>();
 
   useEffect(() => {
-    const products: ProductData[] = JSON.parse(localStorage.getItem('product') || '[]');
-    const product = products.find(p => p.id === productId);
-    if (product) {
-      setProduct(product);
-      setUploadedImages(product.uploadedImages);
-    } else {
-      console.error('Product not found');
-    }
+    productApi.getProduct(
+      productId!,
+      (data: any) => {
+        setProduct(data.product);
+        setUploadedImages(data.product.uploadedImages);
+      },
+      (error: any) => {
+        toast.error('Error fetching product data');
+        console.error('Error fetching product data:', error);
+      }
+    );
   }, [productId]);
 
   const handleImageChange = (imageFile: File) => {
     const newImageURL = URL.createObjectURL(imageFile);
-    setUploadedImages([...uploadedImages, newImageURL]);
+    setUploadedImages((prevUploadedImages) => [...prevUploadedImages, newImageURL]);
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -43,18 +49,18 @@ const UploadAdditionalImage: React.FC = () => {
 
     const updatedProduct = { ...product, uploadedImages };
 
-    const products: ProductData[] = JSON.parse(localStorage.getItem('product') || '[]');
-    const existingProductIndex = products.findIndex(p => p.id === productId);
-
-    if (existingProductIndex !== -1) {
-      products[existingProductIndex] = updatedProduct;
-    } else {
-      products.push(updatedProduct);
-    }
-
-    localStorage.setItem('product', JSON.stringify(products));
-
-    navigate(`/genvision/${userId}`);
+    productApi.updateProduct(
+      productId!,
+      updatedProduct,
+      (data: any) => {
+        toast.success('Product updated successfully');
+        navigate(`/genvision/${userId}/${productId}`);
+      },
+      (error: any) => {
+        toast.error('Error updating product');
+        console.error('Error updating product:', error);
+      }
+    );
   };
 
   if (!product) {
@@ -98,7 +104,7 @@ const UploadAdditionalImage: React.FC = () => {
                 <InputWithSpeech
                   placeholder="Product Id Required."
                   label="Product ID"
-                  inputValue={product.id}
+                  inputValue={product._id}
                   setInput={() => {}}
                   name="productId"
                   disabled={true}
@@ -159,7 +165,25 @@ const UploadAdditionalImage: React.FC = () => {
                   htmlFor="expiryDate"
                   className="block font-bold text-[#000000]"
                 >
-                  Manufacturing / Expiry Date
+                  Manufacturing Date
+                </label>
+                <input
+                  type="text"
+                  id="manufacturingDate"
+                  name="manufacturingDate"
+                  placeholder="Manufacturing Date Required."
+                  className="border border-gray-300 shadow p-1 w-full rounded"
+                  value={product.manufacturingDate}
+                  disabled
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="expiryDate"
+                  className="block font-bold text-[#000000]"
+                >
+                  Expiry Date
                 </label>
                 <input
                   type="text"

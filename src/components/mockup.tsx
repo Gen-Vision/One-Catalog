@@ -1,42 +1,47 @@
 import { useEffect, useState } from 'react';
 import { Separator } from './ui/separator';
 import { useNavigate, useParams } from 'react-router-dom';
+import { productApi } from '../services/productApi';
+import { toast } from 'react-toastify';
 
 interface ProductData {
   id: string;
   category: string;
   uploadedImages: string[];
-  brand?: string | undefined;
-  productName?: string | undefined;
-  quantity?: number | undefined;
-  price?: number | undefined;
-  expiryDate?: string | undefined;
+  brand?: string;
+  productName?: string;
+  quantity?: number;
+  price?: number;
+  expiryDate?: string;
 }
 
 export default function Mockup() {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(localStorage.getItem('mockupImage'));
-  // const [generateButtonPressed, setGenerateButtonPressed] = useState(false);
   const navigate = useNavigate();
-  const {productId} = useParams();
-  const product: ProductData | undefined = JSON.parse(localStorage.getItem('product') || '[]').find((p: ProductData) => p.id === productId);
+  const { userId, productId } = useParams<{ userId: string; productId: string }>();
 
   useEffect(() => {
-    if (product) {
-      // console.log(product);
-      const allImages: string[] = product.uploadedImages;
-      setUploadedImages(allImages);
-    }
-  }, []);
+    productApi.getProduct(
+      productId!,
+      (data: any) => {
+        const product = data.product;
+        setUploadedImages(product.uploadedImages);
+      },
+      (error: any) => {
+        toast.error('Error fetching product data');
+        console.error('Error fetching product data:', error);
+      }
+    );
+  }, [productId]);
 
   const handleImageClick = (imageSrc: string) => {
-    if (selectedImage === imageSrc){ 
+    if (selectedImage === imageSrc) {
       setSelectedImage(null);
       localStorage.removeItem('mockupImage');
-    }
-    else{ 
+    } else {
       setSelectedImage(imageSrc);
-      localStorage.setItem('mockupImage',imageSrc);
+      localStorage.setItem('mockupImage', imageSrc);
     }
   };
 
@@ -47,10 +52,10 @@ export default function Mockup() {
   const handleClearButtonClick = () => {
     setSelectedImage(null);
     localStorage.removeItem('mockupImage');
-  }
+  };
 
   const handleNextButtonClick = () => {
-    navigate(`/genvision/:userId/${productId}/mockup/2`);
+    navigate(`/genvision/${userId}/${productId}/mockup/2`);
   };
 
   return (
