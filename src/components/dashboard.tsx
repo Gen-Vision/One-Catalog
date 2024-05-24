@@ -274,7 +274,7 @@ export default function Dashboard() {
                     : "p-4 border-b border-blue-gray-50";
 
                   return (
-                    <tr key={no} onClick={() => navigate(`/genvision/${userId}/${product_id}`)} style={{ cursor: 'pointer' }}>
+                    <tr key={no} onClick={() => navigate(`/genvision/${userId}/${product_id}/profile`)} style={{ cursor: 'pointer' }}>
                       <td className={classes}>
                       <div
                         onClick={(e) => {

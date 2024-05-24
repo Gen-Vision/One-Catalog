@@ -24,6 +24,7 @@ import Mockup2 from './components/mockup2.tsx';
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from 'react-toastify';
 import PrivateRoute from './PrivateRoute.tsx'; 
+import ProfilePage from './components/profilePage.tsx';
 
 i18next.init({
   interpolation: { escapeValue: false },  // React already does escaping
@@ -69,6 +70,14 @@ const router = createBrowserRouter([
     children: [
       {
         index: true
+      },
+      {
+        path: '/genvision/:userId/:productId/profile',
+        element: (
+          <PrivateRoute>
+            <ProfilePage />
+          </PrivateRoute>
+        ),
       },
       {
         path: '/genvision/:userId/:productId/upload',

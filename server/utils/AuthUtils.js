@@ -1,3 +1,4 @@
+
 const bcrypt = require('bcrypt');
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
