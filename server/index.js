@@ -44,7 +44,6 @@ app.use((error, req, res, next) => {
   res.status(statusCode).json({
     message: message,
   });
-  console.log(error);
 });
 
 const PORT = process.env.PORT || 3002;

@@ -40,21 +40,20 @@ router
     }
   })
   .post("/register", async (req, res, next) => {
-    try {
+
       let { username, password, name } = req.body;
       if (!username || !password || !isValidEmail(username))
         next(handleError(400, "Invalid Username or password"));
-
+      try {
       const existingUser = await User.findOne({ username: username });
       if (existingUser) next(handleError(400, "User Already exist"));
 
       const body = {
         username: username,
-        password: encryptPassword(password),
+        password: await encryptPassword(password),
         name,
       };
-
-      const newUser = await userModel.create({ ...body });
+      const newUser = await User.create({ ...body });
       var userName = username.split('@');
       res.status(200).json({
         statusCode: 200,

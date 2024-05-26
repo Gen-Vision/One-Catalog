@@ -5,10 +5,9 @@ function isValidEmail(email) {
     return emailRegex.test(email);
 }
 
-function encryptPassword(password) {
+async function encryptPassword(password) {
     try {
-        const saltRounds = SALT_ROUND; 
-        const hashedPassword =  bcrypt.hash(password, saltRounds);
+        const hashedPassword = await bcrypt.hash(password, 10);
         return hashedPassword;
     } catch (error) {
         console.error("Error encrypting password:", error);
