@@ -15,9 +15,9 @@ async function encryptPassword(password) {
     }
 }
 
-function checkPassword(password, hashedPassword) {
+async function checkPassword(password, hashedPassword) {
     try {
-         bcrypt.compare(password, hashedPassword);
+         await bcrypt.compare(password, hashedPassword);
         return true;
     } catch (error) {
         return false;
